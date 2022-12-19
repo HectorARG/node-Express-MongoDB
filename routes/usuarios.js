@@ -3,7 +3,7 @@
 */
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { getUsuarios, postUsuarios, actualizarUsuario } =  require('../controllers/usuarios');
+const { getUsuarios, postUsuarios, actualizarUsuario, borrarUsuario } =  require('../controllers/usuarios');
 const { validarCampos } = require('../middlewares/validar-campos');
 
 const router = Router();
@@ -27,6 +27,7 @@ router.put(
         validarCampos
     ], 
     actualizarUsuario);
+router.delete('/:id', borrarUsuario );
 
 
 

@@ -58,8 +58,6 @@ const actualizarUsuario = async(req, res = response) => {
 
     try {
 
-        console.log(uid)
-
         const existeUsuario = await Usuario.findById( uid );
 
         if ( !existeUsuario ) {
@@ -103,9 +101,43 @@ const actualizarUsuario = async(req, res = response) => {
 
 }
 
+const borrarUsuario = async(req, res = response) => {
+    
+    const uid = req.params.id;
+    
+    try {
+        
+        console.log(uid)
+
+        const existeUsuario = await Usuario.findById( uid );
+
+        if ( !existeUsuario ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe el usuario'
+            });
+        }
+
+        await Usuario.findByIdAndDelete( uid );
+
+        res.status(200).json({
+            ok: true,
+            msg: 'Usuario Eliminado'
+        });
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado... revisar logs'
+        });
+    }
+}
+
 
 module.exports = {
     getUsuarios,
     postUsuarios,
-    actualizarUsuario
+    actualizarUsuario,
+    borrarUsuario
 }
