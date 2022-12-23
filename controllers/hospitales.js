@@ -1,20 +1,43 @@
 const { response } = require('express');
+const Hospital = require('../models/hospital')
 
-const getHospitales = (req, res = response) => {
+const getHospitales = async(req, res = response) => {
+
+    const hospitales = await Hospital.find().populate( 'usuario', 'nombre email' )
 
     res.json({
         ok: true,
-        msg: 'Hola Mundo Hospital'
+        hospitales
     });
 
 }
 
-const crearHospital = (req, res = response) => {
+const crearHospital = async (req, res = response) => {
 
-    res.json({
-        ok: true,
-        msg: 'Crear Hospital'
-    });
+    const uid = req.uid;
+    const hospital = new Hospital( {
+         usuario: uid,
+         ...req.body
+    } );
+
+    try {
+
+        const hospitalDB = await hospital.save();
+
+
+
+        res.status(200).json({
+            ok: true,
+            hospital: hospitalDB
+            
+        });   
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error hable con el administrador'
+            
+        });
+    }
 
 }
 
