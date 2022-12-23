@@ -8,15 +8,6 @@ const getUsuarios = async(req, res) =>{
 
     const desde = Number(req.query.desde) || 0;
 
-
-
-/*     const usuarios = await Usuario
-                            .find({}, 'nombre role email google')
-                            .skip( desde )
-                            .limit( 5 );
-                            
-    const total = await usuarios.count(); */
-
     const [ usuarios, total ] =  await Promise.all([
         Usuario
             .find({}, 'nombre role email google')
@@ -31,6 +22,7 @@ const getUsuarios = async(req, res) =>{
         usuarios,
         total
     });
+    
 }
 
 const postUsuarios = async(req, res = response) =>{
