@@ -25,6 +25,43 @@ const getTodo = async(req, res = response) =>{
     
 }
 
+const getColeccion = async(req, res = response) =>{
+
+    const respuesta = req.params.busqueda;
+    const tabla = req.params.tabla;
+    const regex = new RegExp( respuesta, 'i' );
+
+    let data = [];
+
+    switch (tabla) {
+        case 'medicos':
+            data = await Medico.find({ nombre: regex })
+                               .populate('usuario', 'nombre img')
+                               .populate('hospital', 'nombre img');
+        break;
+        case 'hospitales':
+            data = await Hospital.find({ nombre: regex })
+                                 .populate('usuario', 'nombre img');
+        break;
+        case 'usuarios':
+            data = await Usuario.find({ nombre: regex });
+        break;
+    
+        default:
+            return res.status(400).json({
+                ok: false,
+                msg: 'Busqueda Invalida......'
+            });
+    }
+
+    res.json({
+        ok: true,
+        resultados: data
+    })
+    
+}
+
 module.exports = {
-    getTodo
+    getTodo,
+    getColeccion
 }
