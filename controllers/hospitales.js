@@ -3,7 +3,7 @@ const Hospital = require('../models/hospital')
 
 const getHospitales = async(req, res = response) => {
 
-    const hospitales = await Hospital.find().populate( 'usuario', 'nombre email' )
+    const hospitales = await Hospital.find().populate( 'usuario', 'nombre email' );
 
     res.json({
         ok: true,
