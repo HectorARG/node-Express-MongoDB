@@ -7,7 +7,7 @@ const Hospital = require('../models/hospital');
 const fileUpload = async(req, res = response) =>{
 
 
-    const tipo = req.params.tipo;
+    const tipo = req.params.tabla;
     const id = req.params.id;
 
     //Validar Tipo
@@ -19,6 +19,16 @@ const fileUpload = async(req, res = response) =>{
             msg: 'tipo no valido'
         })
     }
+
+    //Validar que existe un archivo
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).json({
+            ok: false,
+            msg: 'No hay ningun archivo'
+        });
+      }
+
+      //Procesar la imagen.....
 
 
     res.json({
