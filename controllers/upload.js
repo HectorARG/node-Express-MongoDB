@@ -1,9 +1,10 @@
+const path = require('path');
+const fs = require('fs');
+
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
 
-const Usuario = require('../models/usuario');
-const Medico = require('../models/medico');
-const Hospital = require('../models/hospital');
+const { actualizarImagen } = require('../helpers/actualizar-imagen');
 
 const fileUpload = async(req, res = response) =>{
 
@@ -36,7 +37,7 @@ const fileUpload = async(req, res = response) =>{
     const extencionArchivo = nombreCortado[ nombreCortado.length - 1 ];
 
     //Validar Extenciones
-    const extencionesValidas = [ 'png', 'jpg', 'jpge', 'gif' ];
+    const extencionesValidas = [ 'png', 'jpg', 'jpeg', 'gif' ];
 
     if( !extencionesValidas.includes( extencionArchivo ) ){
         return res.status(400).json({
@@ -60,6 +61,9 @@ const fileUpload = async(req, res = response) =>{
         })
       }
 
+    //Actualizar BD
+    actualizarImagen( tipo, id, nombreArchivo );
+
       res.json({
           ok: true,
           msg: 'Archivo Subido',
@@ -71,7 +75,25 @@ const fileUpload = async(req, res = response) =>{
 
 }
 
+const getImagen = ( req, res = response ) =>{
+
+    const tipo = req.params.tabla;
+    const imagen = req.params.imagen;
+
+    const pathImg = path.join( __dirname, `../uploads/${ tipo }/${ imagen }` );
+    const pathDefecto = path.join( __dirname, `../uploads/defecto/6f57760966a796644b8cfb0fbc449843.png` );
+    
+    if ( fs.existsSync( pathImg ) ) {
+        res.sendFile( pathImg );
+    }else {
+        res.sendFile( pathDefecto );
+    }
+
+
+} 
+
 
 module.exports = {
-    fileUpload
+    fileUpload,
+    getImagen
 }
