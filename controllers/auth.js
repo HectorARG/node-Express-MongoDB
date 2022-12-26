@@ -2,7 +2,8 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
-const { generarJWT } = require('../helpers/jwt')
+const { generarJWT } = require('../helpers/jwt');
+const { googleVerify } = require('../helpers/google-verify');
 
 const login = async(req, res = response) =>{
 
@@ -46,7 +47,29 @@ const login = async(req, res = response) =>{
 
 }
 
+const googleSingIn = async(req, res = response) =>{
+
+    try {
+
+        const { email, name, picture } = await googleVerify( req.body.token )
+
+        res.status(200).json({
+            ok: true,
+            email, name, picture
+        });
+        
+    } catch (error) {
+        res.status(400).json({
+            ok: false,
+            msg: 'Error de inicio de sesion con tu cuenta Google'
+        });
+    }
+
+
+}
+
 
 module.exports = {
-    login
+    login,
+    googleSingIn
 }
