@@ -41,21 +41,77 @@ const crearHospital = async (req, res = response) => {
 
 }
 
-const actualizarHospital = (req, res = response) => {
+const actualizarHospital = async (req, res = response) => {
 
-    res.json({
-        ok: true,
-        msg: 'Hospital actualizado'
-    });
+    const hospitalID = req.params.id;
+    const uid = req.uid;
+
+    try {
+
+        const existeHospital = await Hospital.findById(hospitalID);
+
+        if( !existeHospital ){
+            return res.status(500).json({
+                ok: false,
+                msg: 'No existe el hospital seleccionado'
+            });
+        }
+
+        // existeHospital.nombre = req.body.nombre;//Actualizar pero de campo en campo (Tedioso)
+
+        const cambiosHospital = {
+            ...req.body,
+            usuario: uid
+        }
+
+        const hospitalActualizado = await Hospital.findByIdAndUpdate( hospitalID, cambiosHospital, { new: true } );
+
+        res.json({
+            ok: true,
+            msg: 'Hospital actualizado',
+            hospital: hospitalActualizado
+        });
+        
+    } catch (error) {
+        
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado al actualizar el hospital'
+        });
+    }
+
 
 }
 
-const eliminarHospital = (req, res = response) => {
+const eliminarHospital = async (req, res = response) => {
 
-    res.json({
-        ok: true,
-        msg: 'Hospital eliminado'
-    });
+    const uid = req.params.id;
+
+    try {
+
+        const existeHospital = await Hospital.findById(uid);
+
+        if( !existeHospital ){
+            return res.status(500).json({
+                ok: false,
+                msg: 'No existe el hospital seleccionado'
+            });
+        }
+
+        await Hospital.findByIdAndDelete( uid );
+
+        res.json({
+            ok: true,
+            msg: 'Hospital eliminado'
+        });
+
+    } catch (error) {
+        
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado al eliminar hospital'
+        });
+    }
 
 }
 
