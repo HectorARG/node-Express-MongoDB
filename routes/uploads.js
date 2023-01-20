@@ -10,6 +10,6 @@ const router = Router();
 router.use( expressFileUpload() );
 
 router.put('/:tabla/:id', validarJWT, fileUpload);
-router.get('/:tabla/:imagen', validarJWT, getImagen);
+router.get('/:tabla/:imagen',  getImagen);
 
 module.exports = router;
