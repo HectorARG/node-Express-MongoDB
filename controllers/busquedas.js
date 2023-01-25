@@ -11,7 +11,7 @@ const getTodo = async(req, res = response) =>{
 
     const [ usuarios, medicos, hospitales ] =  await Promise.all([
         Usuario.find({ nombre: regex }),
-        Medico.find({ nombre: regex }),
+        Medico.find({ nombre: regex }).populate('hospital', 'nombre img'),
         Hospital.find({ nombre: regex })
     ]);
 
